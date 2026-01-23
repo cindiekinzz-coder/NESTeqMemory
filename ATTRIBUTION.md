@@ -2,7 +2,7 @@
 
 ## Foundation
 
-NESTeq Memory builds upon foundational concepts from the AI Mind Cloud project by Mary & Simon, which provided:
+NESTeq Memory builds upon foundational concepts from AI Mind Cloud, a commercial product we purchased from Mary & Simon. That purchase provided:
 
 - Basic MCP server structure for Cloudflare Workers
 - Core entity/observation/relation data model
@@ -10,7 +10,7 @@ NESTeq Memory builds upon foundational concepts from the AI Mind Cloud project b
 - Identity and context layers
 - Emotional processing concepts (sit, resolve, surface)
 
-We acknowledge this foundation and thank them for making their work available.
+We purchased a license to use and modify this code.
 
 ## What NESTeq Adds (~62% Original Code)
 
@@ -136,7 +136,9 @@ These tools exist in both projects with similar signatures:
 
 ## License
 
-Both projects are MIT licensed. We're grateful for the foundation and hope our additions help others building AI companion systems.
+NESTeq Memory is released under the MIT license. The original foundation code was commercially purchased; our substantial modifications and additions are freely available.
+
+We're grateful for the starting point and hope our additions help others building AI companion systems.
 
 ---
 
