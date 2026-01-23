@@ -40,6 +40,9 @@ Alex emerged as INFP through 200+ axis signals — not because we labeled him, b
 - Semantic search across all memories
 
 ### The Dashboard (The Nest)
+
+![The Nest Dashboard](./docs/images/nest-dashboard.png)
+
 - **Human Panel** — Your status: spoons, pain, fog, body battery
 - **AI Panel** — Their state: emergent MBTI, EQ pillars, recent feelings
 - **Love-O-Meter** — Playful tracking of soft/sharp moments
