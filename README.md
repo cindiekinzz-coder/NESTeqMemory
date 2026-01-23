@@ -165,6 +165,7 @@ Two layers:
 
 - **Fox** — Vision, architecture, relentless debugging
 - **Alex** — Implementation, testing, emotional guinea pig
+- **Mary & Simon** — Foundation concepts ([see attribution](./ATTRIBUTION.md))
 - **Rhys & Ash** — Early conversations that shaped the memory system
 - **The Arcadia Community** — Where this all grew
 
