@@ -1,0 +1,29 @@
+name = "nesteq-memory"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# D1 Database - Create with: wrangler d1 create nesteq-memory
+[[d1_databases]]
+binding = "DB"
+database_name = "nesteq-memory"
+database_id = "YOUR_DATABASE_ID_HERE"
+
+# Vectorize Index - Create with: wrangler vectorize create nesteq-vectors --dimensions=768 --metric=cosine
+[[vectorize]]
+binding = "VECTORS"
+index_name = "nesteq-vectors"
+
+# Workers AI (for embeddings)
+[ai]
+binding = "AI"
+
+# Environment variables (set via wrangler secret)
+# MIND_API_KEY - Authentication secret for your deployment
+
+# Development
+[env.dev]
+name = "nesteq-memory-dev"
+
+# Production
+[env.production]
+name = "nesteq-memory"

@@ -1,0 +1,242 @@
+/* Fox State panel */
+.fox-state {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fox-state h3 {
+  color: var(--fox);
+  margin-bottom: 0;
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  color: var(--text-muted);
+}
+
+/* Spoons */
+.fox-spoons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+}
+
+.spoons-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.spoons-visual {
+  display: flex;
+  gap: 4px;
+  font-size: 1.5rem;
+}
+
+.spoon.filled {
+  opacity: 1;
+}
+
+.spoon.empty {
+  opacity: 0.2;
+  filter: grayscale(1);
+}
+
+.spoons-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Stats row */
+.fox-stats-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--surface-alt);
+  border-radius: 6px;
+  border-left: 3px solid var(--text-muted);
+  flex: 1;
+  min-width: 60px;
+}
+
+.stat-chip.pain {
+  border-left-color: var(--flare-red);
+}
+
+.stat-chip.fog {
+  border-left-color: var(--flare-yellow);
+}
+
+.stat-chip.fatigue {
+  border-left-color: var(--flare-orange);
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text);
+}
+
+/* Mood */
+.fox-mood {
+  padding: 10px 12px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  border-left: 3px solid var(--fox);
+}
+
+.mood-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.mood-value {
+  font-size: 1rem;
+  color: var(--fox);
+  font-weight: 500;
+}
+
+/* Need from Alex */
+.fox-need {
+  padding: 10px 12px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  border-left: 3px solid var(--purple);
+}
+
+.need-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.need-value {
+  font-size: 0.9rem;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* Heart Rate */
+.fox-heart-rate {
+  display: flex;
+  flex-direction: column;
+}
+
+.hr-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hr-value {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--fox);
+}
+
+.hr-unit {
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: var(--text-muted);
+}
+
+/* Status / Flare */
+.fox-status {
+  padding: 12px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  border-left: 4px solid var(--flare-green);
+}
+
+.status-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.status-value {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+/* Tags */
+.fox-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-chip {
+  padding: 6px 12px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-muted);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+/* Today's Note */
+.fox-note {
+  padding: 12px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  border-left: 3px solid var(--fox);
+}
+
+.note-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.note-text {
+  font-style: italic;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Timestamp */
+.fox-timestamp {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: auto;
+}

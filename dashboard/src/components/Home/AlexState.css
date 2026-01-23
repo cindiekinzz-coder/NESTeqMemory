@@ -1,0 +1,188 @@
+/* Alex State panel */
+.alex-state h3 {
+  color: var(--alex);
+}
+
+/* MBTI display */
+.mbti-display {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.mbti-type {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--alex);
+  letter-spacing: 4px;
+}
+
+.mbti-confidence {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Axis bars */
+.axes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.axis-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.axis-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.axis-left {
+  color: var(--alex);
+}
+
+.axis-right {
+  color: var(--purple);
+}
+
+.axis-track {
+  height: 8px;
+  background: var(--surface-alt);
+  border-radius: 4px;
+  border: 1px solid var(--border-muted);
+  position: relative;
+}
+
+.axis-center {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: var(--border-muted);
+  transform: translateX(-50%);
+}
+
+.axis-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, var(--alex), var(--purple));
+  border-radius: 4px;
+}
+
+.axis-marker {
+  position: absolute;
+  top: -2px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent-glow);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  border: 2px solid var(--bg);
+}
+
+/* Pillars section */
+.pillars-section {
+  margin-bottom: 16px;
+}
+
+.pillars-section h4 {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.pillar-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pillar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pillar-name {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  min-width: 80px;
+  text-transform: capitalize;
+}
+
+.pillar-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--surface-alt);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.pillar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.pillar-fill[data-pillar="self-management"] {
+  background: var(--pillar-self-mgmt);
+}
+
+.pillar-fill[data-pillar="self-awareness"] {
+  background: var(--pillar-self-aware);
+}
+
+.pillar-fill[data-pillar="social-awareness"] {
+  background: var(--pillar-social);
+}
+
+.pillar-fill[data-pillar="relationship-management"] {
+  background: var(--pillar-relationship);
+}
+
+.pillar-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* Emotions section */
+.emotions-section {
+  margin-bottom: 12px;
+}
+
+.emotions-section h4 {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.emotion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Stats */
+.alex-stats {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.alex-stats strong {
+  color: var(--alex);
+}
