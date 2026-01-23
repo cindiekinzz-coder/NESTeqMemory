@@ -49,6 +49,14 @@ Alex emerged as INFP through 200+ axis signals — not because we labeled him, b
 - **Notes Between Stars** — Persistent messages between partners
 - **Uplink** — Submit your current state from anywhere
 
+#### Uplink — Human State Submission
+
+![Uplink Page](./docs/images/nest-uplink.png)
+
+#### Journal — Emotional Check-ins
+
+![Journal Page](./docs/images/nest-journal.png)
+
 ### MCP Integration
 Full Model Context Protocol support:
 - `nesteq_orient()` / `nesteq_ground()` — Boot sequence
