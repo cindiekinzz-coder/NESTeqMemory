@@ -1,0 +1,72 @@
+/* Recent Feelings Panel */
+.recent-feelings {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.recent-feelings h4 {
+  margin: 0 0 12px 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-glow);
+}
+
+.feelings-loading,
+.no-feelings {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: center;
+  padding: 16px;
+}
+
+.feelings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feeling-item {
+  padding: 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--feeling-color, var(--accent));
+}
+
+.feeling-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.feeling-emotion {
+  font-weight: 600;
+  color: var(--feeling-color, var(--accent));
+  text-transform: capitalize;
+}
+
+.feeling-intensity {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.feeling-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.feeling-content {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.4;
+  /* Truncate long content */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

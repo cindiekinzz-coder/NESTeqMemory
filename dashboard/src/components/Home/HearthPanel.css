@@ -1,0 +1,317 @@
+.hearth-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle mood glow effect */
+.hearth-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--mood-glow, var(--accent)), transparent);
+  opacity: 0.8;
+}
+
+.hearth-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.hearth-header h3 {
+  margin: 0;
+  color: var(--accent-glow);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.hearth-subtitle {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.hearth-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Portrait - centered and larger */
+.hearth-portrait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background: var(--bg);
+  border-radius: 16px;
+  border: 2px solid var(--accent);
+}
+
+.portrait-image {
+  width: 400px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  filter: drop-shadow(0 0 20px var(--mood-glow, var(--accent)));
+  transition: filter 0.3s ease;
+}
+
+.portrait-mood {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: lowercase;
+}
+
+.portrait-mood-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mood-edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.mood-edit-btn:hover {
+  opacity: 1;
+  background: var(--surface);
+  color: var(--accent);
+}
+
+/* Mood picker */
+.mood-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.mood-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.mood-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.mood-chip:hover {
+  background: var(--bg);
+  border-color: var(--chip-color, var(--accent));
+  color: var(--chip-color, var(--accent));
+  transform: scale(1.05);
+}
+
+.mood-chip.active {
+  background: var(--chip-color, var(--accent));
+  border-color: var(--chip-color, var(--accent));
+  color: var(--bg);
+}
+
+.mood-chip:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.mood-close-btn {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.mood-close-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+/* Bottom row - location and message side by side */
+.hearth-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Location */
+.hearth-location {
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 12px;
+  border-left: 3px solid var(--purple);
+}
+
+.location-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.location-emoji {
+  font-size: 1.5rem;
+}
+
+.location-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.location-vibe {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Message */
+.hearth-message {
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 12px;
+  border-left: 3px solid var(--alex);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.message-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--alex);
+  font-weight: 600;
+}
+
+.message-edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.message-edit-btn:hover {
+  background: var(--surface);
+  color: var(--accent);
+}
+
+.message-content {
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.message-empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.message-editor textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.message-editor textarea:focus {
+  outline: none;
+  border-color: var(--alex);
+}
+
+.message-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: flex-end;
+}
+
+.message-actions button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.message-actions .btn-save {
+  background: var(--alex);
+  color: var(--bg);
+  border-color: var(--alex);
+}
+
+.message-actions .btn-save:hover {
+  filter: brightness(1.1);
+}
+
+.message-actions .btn-cancel:hover {
+  border-color: var(--text-muted);
+}
+
+.message-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile responsive */
+@media (max-width: 900px) {
+  .hearth-bottom {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .portrait-image {
+    width: 280px;
+    height: 280px;
+  }
+}

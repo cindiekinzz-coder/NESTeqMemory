@@ -1,24 +1,39 @@
 import { useState, useEffect } from 'react';
-import { getJournalEntries, saveJournalEntry } from '../../cloudAPI';
+import { getFoxJournals, saveFoxJournal } from '../../cloudAPI';
 import './Journal.css';
 
 const PRIMARY_EMOTIONS = [
+  // Difficult
   'Sad', 'Angry', 'Scared', 'Anxious',
-  'Happy', 'Ashamed', 'Confused', 'Numb',
-  'Tired', 'Lonely'
+  'Ashamed', 'Numb', 'Tired', 'Lonely', 'Stressed',
+  // Positive
+  'Happy', 'Peaceful', 'Grateful', 'Hopeful',
+  'Powerful', 'Tender', 'Curious'
 ];
 
 const SUB_EMOTIONS = {
-  Sad: ['Empty', 'Lonely', 'Grieving', 'Disappointed', 'Hopeless', 'Lost', 'Hurt', 'Heartbroken', 'Low', 'Defeated', 'Drained'],
-  Angry: ['Frustrated', 'Resentful', 'Irritated', 'Bitter', 'Betrayed', 'Furious', 'Annoyed', 'Hostile'],
-  Scared: ['Terrified', 'Panicked', 'Worried', 'Helpless', 'Vulnerable', 'Insecure', 'Nervous'],
-  Anxious: ['Overwhelmed', 'Restless', 'Uneasy', 'Tense', 'Dread', 'On edge', 'Hypervigilant'],
-  Happy: ['Grateful', 'Content', 'Peaceful', 'Hopeful', 'Loved', 'Excited', 'Proud', 'Relieved'],
-  Ashamed: ['Guilty', 'Embarrassed', 'Worthless', 'Small', 'Exposed', 'Humiliated'],
-  Confused: ['Lost', 'Uncertain', 'Torn', 'Foggy', 'Disconnected', 'Blank'],
-  Numb: ['Detached', 'Flat', 'Empty', 'Dissociated', 'Shutdown', 'Frozen'],
-  Tired: ['Exhausted', 'Burnt out', 'Depleted', 'Heavy', 'Worn down', 'Fatigued'],
-  Lonely: ['Isolated', 'Abandoned', 'Invisible', 'Disconnected', 'Misunderstood', 'Excluded'],
+  // === DIFFICULT EMOTIONS ===
+  Sad: ['Empty', 'Lonely', 'Grieving', 'Disappointed', 'Hopeless', 'Lost', 'Hurt', 'Heartbroken', 'Low', 'Defeated', 'Drained', 'Anguish', 'Depressed', 'Despondent', 'Discouraged', 'Forlorn', 'Gloomy', 'Grief', 'Melancholy', 'Sorrow', 'Teary', 'Unhappy', 'Weary', 'Yearning', 'Longing'],
+  Angry: ['Frustrated', 'Resentful', 'Irritated', 'Bitter', 'Betrayed', 'Furious', 'Annoyed', 'Hostile', 'Agitated', 'Aggravated', 'Contempt', 'Cynical', 'Disdain', 'Disgruntled', 'Disturbed', 'Edgy', 'Exasperated', 'Grouchy', 'Impatient', 'Irate', 'Moody', 'On edge', 'Outraged', 'Pissed', 'Upset', 'Vindictive'],
+  Scared: ['Terrified', 'Panicked', 'Worried', 'Helpless', 'Vulnerable', 'Insecure', 'Nervous', 'Afraid', 'Apprehensive', 'Frightened', 'Hesitant', 'Paralyzed'],
+  Anxious: ['Overwhelmed', 'Restless', 'Uneasy', 'Tense', 'Dread', 'On edge', 'Hypervigilant', 'Apprehensive', 'Concerned', 'Unsettled', 'Ungrounded', 'Unsure', 'Skeptical', 'Suspicious', 'Questioning', 'Reluctant', 'Shocked', 'Rattled'],
+  Ashamed: ['Guilty', 'Embarrassed', 'Worthless', 'Small', 'Exposed', 'Humiliated', 'Inhibited', 'Mortified', 'Self-conscious', 'Useless', 'Weak', 'Regret', 'Remorseful', 'Sorry'],
+  Numb: ['Detached', 'Flat', 'Empty', 'Dissociated', 'Shutdown', 'Frozen', 'Aloof', 'Bored', 'Distant', 'Indifferent', 'Isolated', 'Lethargic', 'Listless', 'Removed', 'Resistant', 'Withdrawn'],
+  Tired: ['Exhausted', 'Burnt out', 'Depleted', 'Heavy', 'Worn down', 'Fatigued', 'Weary', 'Drained', 'Frazzled', 'Cranky'],
+  Lonely: ['Isolated', 'Abandoned', 'Invisible', 'Disconnected', 'Misunderstood', 'Excluded', 'Longing', 'Yearning'],
+  Stressed: ['Burned out', 'Cranky', 'Depleted', 'Edgy', 'Exhausted', 'Frazzled', 'Overwhelmed', 'Rattled', 'Restless', 'Shaken', 'Tight', 'Weary', 'Worn out', 'Tense'],
+
+  // === POSITIVE EMOTIONS ===
+  Happy: ['Joyful', 'Delighted', 'Excited', 'Thrilled', 'Ecstatic', 'Bliss', 'Radiant', 'Vibrant', 'Alive', 'Energized', 'Playful', 'Silly', 'Free', 'Lively', 'Enthusiastic', 'Eager', 'Passionate', 'Enchanted', 'Amazed', 'Awe', 'Satisfied', 'Fulfilled', 'Refreshed', 'Rejuvenated', 'Renewed', 'Invigorated'],
+  Peaceful: ['Calm', 'Centered', 'Content', 'Relaxed', 'Serene', 'Trusting', 'Patient', 'Present', 'Open', 'Accepting', 'Settled', 'Grounded', 'Still', 'Soft', 'Gentle', 'Flowing'],
+  Grateful: ['Appreciative', 'Blessed', 'Fortunate', 'Humbled', 'Lucky', 'Moved', 'Thankful', 'Touched', 'Grace'],
+  Hopeful: ['Encouraged', 'Expectant', 'Optimistic', 'Trusting', 'Inspired'],
+  Powerful: ['Adventurous', 'Brave', 'Capable', 'Confident', 'Daring', 'Determined', 'Free', 'Grounded', 'Proud', 'Strong', 'Worthy', 'Valiant', 'Courageous', 'Accomplished'],
+  Tender: ['Caring', 'Loving', 'Reflective', 'Self-loving', 'Serene', 'Vulnerable', 'Warm', 'Sensitive', 'Soft', 'Open', 'Gentle', 'Affectionate', 'Compassionate'],
+  Curious: ['Engaged', 'Exploring', 'Fascinated', 'Interested', 'Intrigued', 'Involved', 'Stimulated', 'Open', 'Wondering'],
+
+  // === RELATIONAL ===
+  Connected: ['Accepting', 'Affectionate', 'Caring', 'Compassionate', 'Empathetic', 'Fulfilled', 'Present', 'Safe', 'Warm', 'Worthy', 'Loved', 'Seen', 'Held'],
 };
 
 const WRITING_PROMPTS = [
@@ -44,8 +59,9 @@ export default function Journal() {
 
   const loadEntries = async () => {
     try {
-      const data = await getJournalEntries({ limit: 20, includePrivate: true });
-      setEntries(Array.isArray(data) ? data : []);
+      const data = await getFoxJournals(20);
+      const entries = data?.entries || data?.results || data || [];
+      setEntries(Array.isArray(entries) ? entries : []);
     } catch (err) {
       console.error('Failed to load journal entries:', err);
     }
@@ -80,12 +96,10 @@ export default function Journal() {
         ? `${primaryEmotion} (${subEmotions.join(', ')})`
         : primaryEmotion;
 
-      await saveJournalEntry({
+      await saveFoxJournal({
         content: text || `Feeling: ${mood}`,
-        mood: primaryEmotion,
+        emotion: primaryEmotion,
         tags: subEmotions,
-        private: isPrivate,
-        user_id: 'fox',
       });
 
       // Reset form
@@ -233,7 +247,7 @@ export default function Journal() {
               {entries.map(entry => (
                 <div key={entry.id} className={`card entry ${entry.private ? 'private' : ''}`}>
                   <div className="entry-header">
-                    <span className="entry-mood chip">{entry.mood}</span>
+                    <span className="entry-mood chip">{entry.emotion || entry.mood}</span>
                     {entry.private === 1 && <span className="private-badge">Private</span>}
                     <span className="entry-date">
                       {new Date(entry.created_at).toLocaleString()}

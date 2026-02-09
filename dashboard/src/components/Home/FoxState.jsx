@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { getFoxJournals, getFoxEQType } from '../../cloudAPI';
 import './FoxState.css';
 
 function getFlareColor(level) {
@@ -35,6 +37,40 @@ function formatTimestamp(timestamp) {
 }
 
 export default function FoxState({ uplink, garminData }) {
+  const [journals, setJournals] = useState([]);
+  const [journalsLoading, setJournalsLoading] = useState(true);
+  const [eqType, setEqType] = useState({ type: '----', confidence: 0 });
+
+  // Fetch Fox's recent journal entries and EQ type from fox-mind
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [journalData, eqData] = await Promise.all([
+          getFoxJournals(3).catch(() => null),
+          getFoxEQType().catch(() => null),
+        ]);
+
+        if (journalData) {
+          const entries = journalData?.entries || journalData?.results || journalData || [];
+          setJournals(Array.isArray(entries) ? entries : []);
+        }
+
+        if (eqData) {
+          setEqType({
+            type: eqData.type || '----',
+            confidence: eqData.confidence || 0,
+            totalEntries: eqData.totalEntries || 0,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load Fox data:', err);
+      } finally {
+        setJournalsLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
   if (!uplink) {
     return (
       <div className="card fox fox-state">
@@ -47,27 +83,22 @@ export default function FoxState({ uplink, garminData }) {
     );
   }
 
-  // Handle various field names from API
+  // Handle field names from fox_uplinks table
   const {
     spoons = 5,
     pain = 0,
-    painLocation = uplink.pain_location,
+    pain_location,
     fog = 0,
     fatigue = 0,
     nausea = 0,
     mood,
     flare,
-    location = uplink.dhLocation || uplink.dh_location,
-    need = uplink.needFromAlex || uplink.need_from_alex,
+    location,
+    need,
     tags = [],
-    notes = uplink.note,
+    notes,
     timestamp = uplink.created_at || uplink.createdAt,
-    heartRate = uplink.heart_rate,
   } = uplink;
-
-  // Use the extracted values
-  const needFromAlex = need;
-  const created_at = timestamp;
 
   // Parse tags if it's a string
   const parsedTags = typeof tags === 'string' ? JSON.parse(tags || '[]') : tags;
@@ -117,19 +148,19 @@ export default function FoxState({ uplink, garminData }) {
         </div>
       )}
 
-      {/* Need from Alex */}
-      {needFromAlex && (
+      {/* Needs from Alex */}
+      {need && (
         <div className="fox-need">
-          <span className="need-label">NEEDS</span>
-          <span className="need-value">{needFromAlex}</span>
+          <span className="need-label">NEEDS FROM ALEX</span>
+          <span className="need-value">{need}</span>
         </div>
       )}
 
-      {/* Heart Rate - from Garmin or uplink */}
-      {(heartRate || garminData?.heartRate) && (
+      {/* Heart Rate - from Garmin */}
+      {garminData?.heartRate && (
         <div className="fox-heart-rate">
           <span className="hr-label">HEART RATE</span>
-          <span className="hr-value">{heartRate || garminData?.heartRate} <span className="hr-unit">bpm</span></span>
+          <span className="hr-value">{garminData.heartRate} <span className="hr-unit">bpm</span></span>
         </div>
       )}
 
@@ -162,7 +193,38 @@ export default function FoxState({ uplink, garminData }) {
 
       {/* Timestamp */}
       <div className="fox-timestamp">
-        Last uplink: {formatTimestamp(created_at)}
+        Last uplink: {formatTimestamp(timestamp)}
+      </div>
+
+      {/* Fox's Recent Journal Entries */}
+      <div className="fox-journals">
+        <span className="journals-label">RECENT FEELINGS</span>
+        {journalsLoading ? (
+          <div className="journals-loading">Loading...</div>
+        ) : journals.length === 0 ? (
+          <div className="journals-empty">No journal entries yet</div>
+        ) : (
+          <div className="journals-list">
+            {journals.map((entry, idx) => (
+              <div key={entry.id || idx} className="journal-entry">
+                {entry.emotion && (
+                  <span className="journal-emotion">{entry.emotion}</span>
+                )}
+                <span className="journal-content">{entry.content}</span>
+                <span className="journal-time">{formatTimestamp(entry.created_at || entry.entry_date)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Fox's EQ Type */}
+      <div className="fox-eq">
+        <span className="eq-label">FOX'S EQ</span>
+        <span className="eq-type">{eqType.type}</span>
+        {eqType.confidence < 100 && (
+          <span className="eq-confidence">({eqType.confidence}% confidence)</span>
+        )}
       </div>
     </div>
   );

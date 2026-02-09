@@ -127,6 +127,8 @@
   background: var(--surface-alt);
   border-radius: 3px;
   overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .pillar-fill {

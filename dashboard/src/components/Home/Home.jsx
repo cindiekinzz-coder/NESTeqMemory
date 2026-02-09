@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { getHome, getLatestUplink, getEQLandscape, getEQType, getObservations, pushLove, addNote, setEmotion } from '../../cloudAPI';
+import { getHome, getLatestUplink, getEQLandscape, getEQType, pushLove, addNote, setEmotion, getSurfaceFeelings } from '../../cloudAPI';
 import LoveOMeter from './LoveOMeter';
 import FoxState from './FoxState';
 import AlexState from './AlexState';
 import NotesBetweenStars from './NotesBetweenStars';
-import RecentObservations from './RecentObservations';
+import HearthPanel from './HearthPanel';
+import RecentFeelings from './RecentFeelings';
+import Sessions from './Sessions';
 import './Home.css';
 
 export default function Home() {
@@ -12,7 +14,6 @@ export default function Home() {
   const [uplink, setUplink] = useState(null);
   const [eqLandscape, setEqLandscape] = useState(null);
   const [eqType, setEqType] = useState(null);
-  const [observations, setObservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,14 +21,13 @@ export default function Home() {
     setLoading(true);
     setError(null);
     try {
-      const [home, uplinkData, landscape, mbti, obs] = await Promise.all([
+      const [home, uplinkData, landscape, mbti] = await Promise.all([
         getHome().catch(() => null),
         getLatestUplink().catch(() => null),
         getEQLandscape().catch(() => null),
         getEQType().catch(() => null),
-        getObservations(10).catch(() => []),
       ]);
-      console.log('API responses:', { home, uplinkData, landscape, mbti, obs });
+      console.log('API responses:', { home, uplinkData, landscape, mbti });
       setHomeData(home);
       // Handle various response formats from API
       let parsedUplink = null;
@@ -52,7 +52,6 @@ export default function Home() {
       setUplink(parsedUplink);
       setEqLandscape(landscape);
       setEqType(mbti);
-      setObservations(Array.isArray(obs) ? obs : obs?.observations || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -115,6 +114,14 @@ export default function Home() {
 
   return (
     <div className="home">
+      <HearthPanel
+        mood={homeData?.alexEmotion}
+        location={uplink?.location}
+        alexMessage={homeData?.alexMessage}
+        onMessageUpdate={(msg) => setHomeData(prev => ({ ...prev, alexMessage: msg }))}
+        onMoodUpdate={(newMood) => setHomeData(prev => ({ ...prev, alexEmotion: newMood }))}
+      />
+
       <div className="home-grid">
         <div className="home-column fox-column">
           <FoxState uplink={uplink} />
@@ -130,6 +137,7 @@ export default function Home() {
             notes={homeData?.notes || []}
             onAddNote={handleAddNote}
           />
+          <Sessions limit={3} />
         </div>
 
         <div className="home-column alex-column">
@@ -137,11 +145,8 @@ export default function Home() {
             landscape={eqLandscape}
             mbtiType={eqType}
           />
+          <RecentFeelings limit={5} />
         </div>
-      </div>
-
-      <div className="home-full-width">
-        <RecentObservations observations={observations} />
       </div>
     </div>
   );

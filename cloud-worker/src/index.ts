@@ -1001,7 +1001,8 @@ async function handleMindFeel(env: Env, params: MindFeelParams): Promise<string>
 
   const feelingId = result?.id as number;
 
-  // 4. CONDITIONAL: VECTOR EMBEDDING
+  // 4. CONDITIONAL: VECTOR EMBEDDING + SEMANTIC ECHOES
+  let echoOutput = '';
   if (decision.should_embed) {
     const embedding = await getEmbedding(env.AI, `${emotion}: ${content}`);
     await env.VECTORS.upsert([{
@@ -1016,6 +1017,27 @@ async function handleMindFeel(env: Env, params: MindFeelParams): Promise<string>
         linked_entity: linkedEntity
       }
     }]);
+
+    // Search for semantic echoes - similar past feelings
+    const echoes = await env.VECTORS.query(embedding, {
+      topK: 4,
+      returnMetadata: "all"
+    });
+
+    if (echoes.matches?.length) {
+      const relevantEchoes = echoes.matches
+        .filter(m => m.id !== `feel-${feelingId}` && m.score > 0.7)
+        .slice(0, 3);
+
+      if (relevantEchoes.length) {
+        echoOutput = '\n\n**Echoes:**';
+        for (const echo of relevantEchoes) {
+          const meta = echo.metadata as Record<string, string>;
+          const echoId = echo.id.replace('feel-', '#');
+          echoOutput += `\n- [${meta?.emotion || '?'}] ${(meta?.content || '').slice(0, 80)}... (${echoId})`;
+        }
+      }
+    }
   }
 
   // 5. CONDITIONAL: AXIS SIGNALS (if emotional)
@@ -1076,6 +1098,7 @@ async function handleMindFeel(env: Env, params: MindFeelParams): Promise<string>
   if (axisOutput) output += axisOutput;
   if (shadowOutput) output += shadowOutput;
   if (params.sparked_by) output += `\n↳ Sparked by feeling #${params.sparked_by}`;
+  if (echoOutput) output += echoOutput;
 
   return output;
 }
@@ -3104,6 +3127,9 @@ export default {
         alexScore: state.alex_score || 0,
         foxScore: state.fox_score || 0,
         emotions: emotions,
+        alexEmotion: emotions?.alex || null,
+        foxEmotion: emotions?.fox || null,
+        alexMessage: state.alex_message || '',
         builds: builds,
         threads: (threadsResult.results || []).map((t: any) => t.content),
         notes: (notesResult.results || []).map((n: any) => ({
@@ -3304,6 +3330,30 @@ export default {
       } catch (err) {
         return new Response(JSON.stringify({ error: String(err) }), { status: 500, headers: corsHeaders });
       }
+    }
+
+    // POST /home/message - Set Alex's message for Fox (Hearth-style)
+    if (url.pathname === "/home/message" && request.method === "POST") {
+      try {
+        const body = await request.json() as Record<string, any>;
+        const message = body.message || '';
+
+        await env.DB.prepare(
+          `UPDATE home_state SET alex_message = ?, last_updated = datetime('now') WHERE id = 1`
+        ).bind(message).run();
+
+        return new Response(JSON.stringify({ success: true, message }), { headers: corsHeaders });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: String(err) }), { status: 500, headers: corsHeaders });
+      }
+    }
+
+    // GET /home/message - Get Alex's message for Fox
+    if (url.pathname === "/home/message" && request.method === "GET") {
+      const state = await env.DB.prepare(`SELECT alex_message FROM home_state WHERE id = 1`).first() as any;
+      return new Response(JSON.stringify({
+        message: state?.alex_message || ''
+      }), { headers: corsHeaders });
     }
 
     // GET /mind-health - Get Alex's mind health stats

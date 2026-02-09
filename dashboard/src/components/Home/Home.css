@@ -7,12 +7,33 @@
   display: grid;
   grid-template-columns: 1fr 1.2fr 1fr;
   gap: 20px;
+  align-items: start;
 }
 
 .home-column {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+/* Make the cards in each column stretch to fill */
+.home-column > .card {
+  flex: 1;
+}
+
+/* Notes section should match other panels and scroll if content is long */
+.home-column .notes-between-stars {
+  min-height: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Recent feelings should also scroll */
+.home-column .recent-feelings,
+.fox-journals {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 /* Loading and error states */
@@ -47,6 +68,11 @@
 /* Full width section */
 .home-full-width {
   margin-top: 20px;
+}
+
+/* HearthPanel at top needs spacing below */
+.home > .hearth-panel {
+  margin-bottom: 20px;
 }
 
 /* Responsive */

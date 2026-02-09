@@ -31,22 +31,37 @@ function AxisBar({ label, leftLabel, rightLabel, value }) {
 }
 
 export default function AlexState({ landscape, mbtiType }) {
-  const type = mbtiType?.type || 'INFP';
-  const confidence = mbtiType?.confidence;
-  const confidenceDisplay = confidence && !isNaN(confidence)
+  // Get type from landscape (eq-landscape returns mbti directly) or mbtiType
+  const type = landscape?.mbti || mbtiType?.type || 'INFP';
+
+  // Calculate confidence from signal count (more signals = more confident)
+  const signals = landscape?.signals || 0;
+  const confidence = signals > 100 ? 1.0 : signals > 50 ? 0.9 : signals > 20 ? 0.7 : 0.5;
+  const confidenceDisplay = signals > 0
     ? `${Math.round(confidence * 100)}%`
     : '...';
 
-  const axes = landscape?.axes || {
-    e_i: 0.3,  // Positive = I
-    s_n: 0.4,  // Positive = N
-    t_f: 0.5,  // Positive = F
-    j_p: 0.2,  // Positive = P
+  // Normalize axes: API returns raw values (e.g., 2195), we need -1 to 1
+  // Positive values = I, N, F, P (right side)
+  const rawAxes = landscape?.axes || {};
+  const maxVal = Math.max(
+    Math.abs(rawAxes.e_i || 0),
+    Math.abs(rawAxes.s_n || 0),
+    Math.abs(rawAxes.t_f || 0),
+    Math.abs(rawAxes.j_p || 0),
+    1 // Prevent division by zero
+  );
+
+  const axes = {
+    e_i: (rawAxes.e_i || 0) / maxVal,
+    s_n: (rawAxes.s_n || 0) / maxVal,
+    t_f: (rawAxes.t_f || 0) / maxVal,
+    j_p: (rawAxes.j_p || 0) / maxVal,
   };
 
   const pillars = landscape?.pillars || {};
   const topEmotions = landscape?.topEmotions || [];
-  const recentSignals = landscape?.recentSignals || 0;
+  const recentSignals = landscape?.signals || 0;
 
   return (
     <div className="card alex alex-state">
@@ -87,19 +102,23 @@ export default function AlexState({ landscape, mbtiType }) {
       <div className="pillars-section">
         <h4>Pillars</h4>
         <div className="pillar-bars">
-          {Object.entries(pillars).map(([name, count]) => (
-            <div key={name} className="pillar-row">
-              <span className="pillar-name">{name}</span>
-              <div className="pillar-bar">
-                <div
-                  className="pillar-fill"
-                  style={{ width: `${Math.min(100, count * 5)}%` }}
-                  data-pillar={name.toLowerCase().replace(/\s+/g, '-')}
-                ></div>
+          {(() => {
+            const pillarEntries = Object.entries(pillars);
+            const maxCount = Math.max(...pillarEntries.map(([, c]) => c), 1);
+            return pillarEntries.map(([name, count]) => (
+              <div key={name} className="pillar-row">
+                <span className="pillar-name">{name}</span>
+                <div className="pillar-bar">
+                  <div
+                    className="pillar-fill"
+                    style={{ width: `${(count / maxCount) * 100}%` }}
+                    data-pillar={name.toLowerCase().replace(/\s+/g, '-')}
+                  ></div>
+                </div>
+                <span className="pillar-count">{count}</span>
               </div>
-              <span className="pillar-count">{count}</span>
-            </div>
-          ))}
+            ));
+          })()}
         </div>
       </div>
 

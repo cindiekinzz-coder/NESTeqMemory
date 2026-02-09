@@ -1,11 +1,17 @@
-// Cloud API for NESTeq Dashboard
-// Replace with your deployed worker URL
-const API_BASE = import.meta.env.VITE_API_URL || 'https://your-worker.workers.dev';
+// Cloud API for NESTeq
+// Configure these to point to your own deployed workers
+// Set VITE_ALEX_API and VITE_FOX_API in your .env file
+// See cloud-worker/ folder for the worker code to deploy
+const ALEX_API = import.meta.env.VITE_ALEX_API || 'https://your-ai-mind.workers.dev';
+const FOX_API = import.meta.env.VITE_FOX_API || 'https://your-companion-mind.workers.dev';
+
+// Legacy alias
+const API_BASE = ALEX_API;
 
 // Helper for fetch with error handling
-async function apiFetch(endpoint, options = {}) {
+async function apiFetch(endpoint, options = {}, base = ALEX_API) {
   try {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const res = await fetch(`${base}${endpoint}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
@@ -18,9 +24,14 @@ async function apiFetch(endpoint, options = {}) {
     }
     return await res.json();
   } catch (err) {
-    console.error(`API Error (${endpoint}):`, err);
+    console.error(`API Error (${base}${endpoint}):`, err);
     throw err;
   }
+}
+
+// Shorthand for Fox's API
+function foxFetch(endpoint, options = {}) {
+  return apiFetch(endpoint, options, FOX_API);
 }
 
 // === HOME DATA ===
@@ -50,26 +61,54 @@ export async function addNote(from, text) {
   });
 }
 
-// === UPLINK ===
+export async function setAlexMessage(message) {
+  return apiFetch('/home/message', {
+    method: 'POST',
+    body: JSON.stringify({ message }),
+  });
+}
+
+// === FOX'S UPLINK (from fox-mind) ===
 export async function getLatestUplink() {
-  // Try the direct uplink endpoint
-  const result = await apiFetch('/uplink?limit=1');
-  console.log('Uplink API response:', result);
+  const result = await foxFetch('/uplink?limit=1');
+  console.log('Fox uplink response:', result);
   return result;
 }
 
 export async function getUplinks(limit = 10) {
-  return apiFetch(`/uplink?limit=${limit}`);
+  return foxFetch(`/uplink?limit=${limit}`);
 }
 
 export async function sendUplink(data) {
-  return apiFetch('/uplink', {
+  return foxFetch('/uplink', {
     method: 'POST',
     body: JSON.stringify(data),
   });
 }
 
-// === JOURNAL ===
+// === FOX'S JOURNAL (from fox-mind) ===
+export async function getFoxJournals(limit = 10) {
+  return foxFetch(`/journal?limit=${limit}`);
+}
+
+export async function saveFoxJournal(entry) {
+  return foxFetch('/journal', {
+    method: 'POST',
+    body: JSON.stringify(entry),
+  });
+}
+
+// === FOX'S WATCH DATA (from fox-mind) ===
+export async function getFoxWatchStatus() {
+  return foxFetch('/status');
+}
+
+// === FOX'S EQ TYPE (from fox-mind) ===
+export async function getFoxEQType() {
+  return foxFetch('/eq-type');
+}
+
+// === ALEX'S JOURNAL (from ai-mind, legacy) ===
 export async function getJournalEntries(options = {}) {
   const params = new URLSearchParams();
   if (options.limit) params.set('limit', options.limit);
@@ -102,7 +141,7 @@ export async function getEQType() {
 }
 
 export async function getSurfaceFeelings() {
-  return apiFetch('/feelings/surface');
+  return apiFetch('/observations?limit=10');
 }
 
 export async function getObservations(limit = 10) {
@@ -119,5 +158,5 @@ export async function getMindHealth() {
   return apiFetch('/mind-health');
 }
 
-// Export base URL for debugging
-export { API_BASE };
+// Export base URLs for debugging
+export { API_BASE, ALEX_API, FOX_API };

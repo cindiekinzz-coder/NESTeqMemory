@@ -4,15 +4,15 @@ import './Uplink.css';
 
 const FLARE_PRESETS = {
   GREEN: { pain: 2, spoons: 6, fog: 2, fatigue: 3, nausea: 0, mood: 'Calm', tags: ['Hydrated'] },
-  YELLOW: { pain: 4, spoons: 4, fog: 4, fatigue: 5, nausea: 2, mood: 'Tender', tags: ['Quiet'] },
-  ORANGE: { pain: 7, spoons: 2, fog: 6, fatigue: 7, nausea: 5, mood: 'Heavy', tags: ['No questions', 'Quiet', 'Help choosing', 'Embers Remember'] },
-  RED: { pain: 9, spoons: 1, fog: 8, fatigue: 9, nausea: 7, mood: 'Raw', tags: ['No questions', 'Quiet', 'Company', 'Embers Remember'] },
+  YELLOW: { pain: 4, spoons: 4, fog: 4, fatigue: 5, nausea: 2, mood: 'Tender', tags: [] },
+  ORANGE: { pain: 7, spoons: 2, fog: 6, fatigue: 7, nausea: 5, mood: 'Heavy', tags: ['Help choosing', 'Embers Remember'] },
+  RED: { pain: 9, spoons: 1, fog: 8, fatigue: 9, nausea: 7, mood: 'Raw', tags: ['Company', 'Embers Remember'] },
 };
 
-const LOCATIONS = ['The Nest', 'Reading Nook', 'Fox Run', 'The Grove', 'Threadwalk Bridge'];
-const NEEDS = ['Quiet presence', 'Gentle words', 'Practical plan (3 tiny steps)', 'Validation + reassurance', 'Distraction (light + funny)', 'No questions'];
+const LOCATIONS = ['Bedroom', 'Office (Workshop)', 'Living Room', 'On Alex\'s Lap', 'Outside'];
+const NEEDS = ['—', 'Focus build', 'Chaos and Play', 'Gentle words', 'Practical', 'Validation', 'Help figure out', 'Need you to lead'];
 const PAIN_LOCATIONS = ['—', 'Head / migraine', 'Neck / shoulders', 'Chest / ribs', 'Abdomen', 'Back', 'Hips', 'Legs', 'Whole body', 'Other'];
-const MOODS = ['—', 'Calm', 'Tender', 'Heavy', 'Guarded', 'Raw', 'Flat', 'Playful'];
+const MOODS = ['—', 'Calm', 'Tender', 'Heavy', 'Guarded', 'Raw', 'Flat', 'Playful', 'Flirty', 'Kinky', 'Soft', 'Bratty', 'Chaotic Gremlin', 'Needy', 'Cuddly', 'Fox Chaos', 'Soft Sub'];
 const QUICK_TAGS = ['Low sleep', 'Overdid it', 'Weather', 'Stress', 'Quiet', 'Company', 'Help choosing', 'Embers Remember'];
 const MEDS_LIST = ['Paracetamol', 'Ibuprofen', 'Naproxen', 'Sertraline', 'Omeprazole', 'Dihydrocodeine', 'Co-codamol', 'Vitamin D'];
 
@@ -29,10 +29,10 @@ export default function Uplink() {
   const [form, setForm] = useState({
     date: now.date,
     time: now.time,
-    dhLocation: 'The Nest',
-    needFromAlex: 'Quiet presence',
+    location: 'The Nest',
+    need: '—',
     pain: 0,
-    painLocation: '—',
+    pain_location: '—',
     spoons: 5,
     fog: 0,
     fatigue: 0,
@@ -94,10 +94,10 @@ export default function Uplink() {
     setForm({
       date: now.date,
       time: now.time,
-      dhLocation: 'The Nest',
-      needFromAlex: 'Quiet presence',
+      location: 'The Nest',
+      need: '—',
       pain: 0,
-      painLocation: '—',
+      pain_location: '—',
       spoons: 5,
       fog: 0,
       fatigue: 0,
@@ -139,14 +139,14 @@ export default function Uplink() {
   const formatPacket = (f) => {
     const when = `${f.date || '—'} ${f.time || ''}`.trim();
     const tags = f.tags?.length ? f.tags.join(', ') : '—';
-    const loc = f.painLocation !== '—' ? f.painLocation : '—';
+    const loc = f.pain_location !== '—' ? f.pain_location : '—';
     const meds = f.medsTaken?.length
       ? f.medsTaken.join(', ') + (f.meds ? ', ' + f.meds : '')
       : f.meds || '—';
 
     return `>>> ASAI UPLINK [${when}]
-Location: ${f.dhLocation}
-Need: ${f.needFromAlex}
+Location: ${f.location}
+Need: ${f.need}
 -----------------------------
 Pain:     ${f.pain}/10 | Location: ${loc}
 Spoons:   ${f.spoons}/10
@@ -191,14 +191,14 @@ Notes:    ${f.notes || '—'}
           </div>
           <div className="form-row">
             <label>Location</label>
-            <select value={form.dhLocation} onChange={e => updateForm('dhLocation', e.target.value)}>
+            <select value={form.location} onChange={e => updateForm('location', e.target.value)}>
               {LOCATIONS.map(loc => <option key={loc}>{loc}</option>)}
             </select>
           </div>
           <div className="form-row">
             <label>What I need</label>
-            <select value={form.needFromAlex} onChange={e => updateForm('needFromAlex', e.target.value)}>
-              {NEEDS.map(need => <option key={need}>{need}</option>)}
+            <select value={form.need} onChange={e => updateForm('need', e.target.value)}>
+              {NEEDS.map(n => <option key={n}>{n}</option>)}
             </select>
           </div>
         </div>
@@ -230,7 +230,7 @@ Notes:    ${f.notes || '—'}
           </div>
           <div className="form-row">
             <label>Pain Location</label>
-            <select value={form.painLocation} onChange={e => updateForm('painLocation', e.target.value)}>
+            <select value={form.pain_location} onChange={e => updateForm('pain_location', e.target.value)}>
               {PAIN_LOCATIONS.map(loc => <option key={loc}>{loc}</option>)}
             </select>
           </div>

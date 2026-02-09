@@ -18,6 +18,11 @@ function getPillarColor(pillar) {
     'Self-Awareness': 'var(--pillar-self-aware)',
     'Social Awareness': 'var(--pillar-social)',
     'Relationship Management': 'var(--pillar-relationship)',
+    // Also handle API format (with underscores and spaces)
+    'SELF_MANAGEMENT': 'var(--pillar-self-mgmt)',
+    'SELF_AWARENESS': 'var(--pillar-self-aware)',
+    'SOCIAL_AWARENESS': 'var(--pillar-social)',
+    'RELATIONSHIP_MANAGEMENT': 'var(--pillar-relationship)',
   };
   return colors[pillar] || 'var(--purple)';
 }
@@ -40,14 +45,14 @@ export default function RecentObservations({ observations = [] }) {
           <div key={obs.id || i} className="observation-item">
             <div className="observation-header">
               <span className="observation-emotion" style={{ color: 'var(--accent-glow)' }}>
-                {obs.emotion || 'noted'}
+                {obs.emotion_word || obs.emotion || 'noted'}
               </span>
-              {obs.pillar && (
+              {(obs.pillar_name || obs.pillar) && (
                 <span
                   className="observation-pillar"
-                  style={{ color: getPillarColor(obs.pillar) }}
+                  style={{ color: getPillarColor(obs.pillar_name || obs.pillar) }}
                 >
-                  {obs.pillar}
+                  {obs.pillar_name || obs.pillar}
                 </span>
               )}
               <span className="observation-time">
