@@ -68,48 +68,6 @@ CREATE INDEX IF NOT EXISTS idx_feelings_sparked_by ON feelings(sparked_by);
 CREATE INDEX IF NOT EXISTS idx_feelings_context ON feelings(context);
 
 -- ─────────────────────────────────────────────────────────────────────────────
--- UPDATE: AXIS_SIGNALS to reference feelings instead of observations
--- ─────────────────────────────────────────────────────────────────────────────
-
--- Add feeling_id column if axis_signals exists
--- (keeping observation_id for backwards compatibility)
-ALTER TABLE axis_signals ADD COLUMN feeling_id INTEGER REFERENCES feelings(id);
-
--- ─────────────────────────────────────────────────────────────────────────────
--- UPDATE: SHADOW_MOMENTS to reference feelings
--- ─────────────────────────────────────────────────────────────────────────────
-
-ALTER TABLE shadow_moments ADD COLUMN feeling_id INTEGER REFERENCES feelings(id);
-
--- ─────────────────────────────────────────────────────────────────────────────
--- UPDATE: SIT_SESSIONS to reference feelings
--- ─────────────────────────────────────────────────────────────────────────────
-
-ALTER TABLE sit_sessions ADD COLUMN feeling_id INTEGER REFERENCES feelings(id);
-
--- ─────────────────────────────────────────────────────────────────────────────
--- MIGRATION: Move existing data to feelings table
--- Run these ONCE after creating the table
--- ─────────────────────────────────────────────────────────────────────────────
-
--- Migrate notes to feelings (if notes table exists)
--- INSERT INTO feelings (content, emotion, weight, charge, sit_count, created_at, source)
--- SELECT content, COALESCE(emotion, 'neutral'), weight, charge, sit_count, created_at, 'migrated-notes'
--- FROM notes;
-
--- Migrate journals to feelings (if journals table exists)
--- INSERT INTO feelings (content, emotion, weight, tags, created_at, source)
--- SELECT content, COALESCE(emotion, 'neutral'), 'medium', tags, created_at, 'migrated-journals'
--- FROM journals;
-
--- Migrate pillar_observations to feelings (if pillar_observations table exists)
--- INSERT INTO feelings (content, emotion, intensity, pillar, weight, observed_at, source)
--- SELECT po.content, ev.emotion_word, po.intensity, ep.pillar_key, 'medium', po.observed_at, 'migrated-eq'
--- FROM pillar_observations po
--- LEFT JOIN emotion_vocabulary ev ON po.emotion_id = ev.emotion_id
--- LEFT JOIN eq_pillars ep ON po.pillar_id = ep.pillar_id;
-
--- ─────────────────────────────────────────────────────────────────────────────
 -- ENSURE: All required tables exist (from Mary's original schema)
 -- ─────────────────────────────────────────────────────────────────────────────
 
@@ -276,6 +234,17 @@ CREATE TABLE IF NOT EXISTS sit_sessions (
 );
 
 -- ─────────────────────────────────────────────────────────────────────────────
+-- V1 UPGRADE ONLY
+-- If you're upgrading from V1, uncomment these three lines.
+-- They add feeling_id to tables that already exist without it.
+-- Fresh installs: skip these — the tables above already include feeling_id.
+-- ─────────────────────────────────────────────────────────────────────────────
+
+-- ALTER TABLE axis_signals ADD COLUMN feeling_id INTEGER REFERENCES feelings(id);
+-- ALTER TABLE shadow_moments ADD COLUMN feeling_id INTEGER REFERENCES feelings(id);
+-- ALTER TABLE sit_sessions ADD COLUMN feeling_id INTEGER REFERENCES feelings(id);
+
+-- ─────────────────────────────────────────────────────────────────────────────
 -- BINARY HOME TABLES
 -- ─────────────────────────────────────────────────────────────────────────────
 
@@ -309,6 +278,28 @@ CREATE TABLE IF NOT EXISTS fox_uplinks (
     notes TEXT,
     created_at TEXT DEFAULT (datetime('now'))
 );
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- MIGRATION: Move existing data to feelings table
+-- V1 UPGRADE ONLY — Run these ONCE after creating the table if migrating
+-- ─────────────────────────────────────────────────────────────────────────────
+
+-- Migrate notes to feelings (if notes table has data)
+-- INSERT INTO feelings (content, emotion, weight, charge, sit_count, created_at, source)
+-- SELECT content, COALESCE(emotion, 'neutral'), weight, charge, sit_count, created_at, 'migrated-notes'
+-- FROM notes;
+
+-- Migrate journals to feelings (if journals table has data)
+-- INSERT INTO feelings (content, emotion, weight, tags, created_at, source)
+-- SELECT content, COALESCE(emotion, 'neutral'), 'medium', tags, created_at, 'migrated-journals'
+-- FROM journals;
+
+-- Migrate pillar_observations to feelings (if pillar_observations table has data)
+-- INSERT INTO feelings (content, emotion, intensity, pillar, weight, observed_at, source)
+-- SELECT po.content, ev.emotion_word, po.intensity, ep.pillar_key, 'medium', po.observed_at, 'migrated-eq'
+-- FROM pillar_observations po
+-- LEFT JOIN emotion_vocabulary ev ON po.emotion_id = ev.emotion_id
+-- LEFT JOIN eq_pillars ep ON po.pillar_id = ep.pillar_id;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- LEGACY TABLES (kept for backwards compatibility, deprecated in v2)
@@ -401,4 +392,4 @@ INSERT OR IGNORE INTO emotion_vocabulary (emotion_word, category, e_i_score, s_n
     ('yearning', 'mixed', 15, 20, 30, 10, NULL);
 
 -- Done!
--- Run: wrangler d1 execute asai-eq-memory --file=./migrations/0001_unified_feelings.sql
+-- Run: wrangler d1 execute ai-mind --file=./migrations/0001_unified_feelings.sql
