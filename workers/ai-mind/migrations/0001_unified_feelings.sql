@@ -200,11 +200,12 @@ CREATE TABLE IF NOT EXISTS emergent_type_snapshot (
     snapshot_id INTEGER PRIMARY KEY AUTOINCREMENT,
     calculated_type TEXT,
     confidence INTEGER,
-    e_i_total INTEGER,
-    s_n_total INTEGER,
-    t_f_total INTEGER,
-    j_p_total INTEGER,
+    e_i_score INTEGER,
+    s_n_score INTEGER,
+    t_f_score INTEGER,
+    j_p_score INTEGER,
     total_signals INTEGER,
+    observation_count INTEGER NOT NULL DEFAULT 0,
     snapshot_date TEXT DEFAULT (datetime('now'))
 );
 

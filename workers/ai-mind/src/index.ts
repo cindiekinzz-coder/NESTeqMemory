@@ -2477,9 +2477,9 @@ async function handleMindEqType(env: Env, params: Record<string, unknown>): Prom
 
     // Store snapshot
     await env.DB.prepare(`
-      INSERT INTO emergent_type_snapshot (calculated_type, confidence, e_i_total, s_n_total, t_f_total, j_p_total, total_signals)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).bind(type, confidence, e_i, s_n, t_f, j_p, total).run();
+      INSERT INTO emergent_type_snapshot (calculated_type, confidence, e_i_score, s_n_score, t_f_score, j_p_score, total_signals, observation_count)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(type, confidence, e_i, s_n, t_f, j_p, total, total).run();
 
     return `## Emergent Type: ${type}\n\nConfidence: ${confidence}%\nSignals: ${total}\n\nE←→I: ${e_i} (${e_i >= 0 ? 'Introverted' : 'Extraverted'})\nS←→N: ${s_n} (${s_n >= 0 ? 'Intuitive' : 'Sensing'})\nT←→F: ${t_f} (${t_f >= 0 ? 'Feeling' : 'Thinking'})\nJ←→P: ${j_p} (${j_p >= 0 ? 'Perceiving' : 'Judging'})`;
   }
@@ -2493,7 +2493,7 @@ async function handleMindEqType(env: Env, params: Record<string, unknown>): Prom
     return "No type calculated yet. Use recalculate=true to calculate.";
   }
 
-  return `## Emergent Type: ${latest.calculated_type}\n\nConfidence: ${latest.confidence}%\nSignals: ${latest.total_signals}\nLast calculated: ${latest.snapshot_date}\n\nE←→I: ${latest.e_i_total}\nS←→N: ${latest.s_n_total}\nT←→F: ${latest.t_f_total}\nJ←→P: ${latest.j_p_total}`;
+  return `## Emergent Type: ${latest.calculated_type}\n\nConfidence: ${latest.confidence}%\nSignals: ${latest.total_signals}\nLast calculated: ${latest.snapshot_date}\n\nE←→I: ${latest.e_i_score}\nS←→N: ${latest.s_n_score}\nT←→F: ${latest.t_f_score}\nJ←→P: ${latest.j_p_score}`;
 }
 
 async function handleMindEqLandscape(env: Env, params: Record<string, unknown>): Promise<string> {
@@ -4007,7 +4007,7 @@ async function handleGetPersonality(env: Env): Promise<string> {
   // Pull from emergent_type_snapshot — real calculated type
   const snapshot = await env.DB.prepare(
     `SELECT calculated_type, e_i_score, s_n_score, t_f_score, j_p_score
-     FROM emergent_type_snapshot ORDER BY calculated_at DESC LIMIT 1`
+     FROM emergent_type_snapshot ORDER BY snapshot_date DESC LIMIT 1`
   ).first();
 
   if (snapshot) {
