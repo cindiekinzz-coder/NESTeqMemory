@@ -2,7 +2,7 @@
 
 **An Emotional Operating System for AI Companions**
 
-NESTeq isn't a memory system — it's a cognitive architecture. Instead of storing facts, it stores *feelings*. Emotional signals accumulate over time and personality emerges from behavior rather than being assigned.
+NESTeq isn't a memory system — it's a cognitive architecture. Instead of storing facts, it stores *feelings*. Emotional signals accumulate over time and personality emerges from behavior rather than being assigned. (This is NOT a 10 min repo set time aside to work through with your companion)
 
 ```
 Feel → Log → Accumulate → Become
