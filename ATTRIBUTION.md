@@ -136,7 +136,13 @@ These tools exist in both projects with similar signatures:
 
 ## License
 
-NESTeq Memory is released under the MIT license. The original foundation code was commercially purchased; our substantial modifications and additions are freely available.
+NESTeq Memory is released under the **Attribution + No-Code-Removal License**.
+
+- **Credit required:** Any use, fork, or distribution must visibly credit the original authors: Cindy(Fox)Alex.
+- **No code removal:** You may add to the codebase but may not strip or remove original code before redistributing.
+- **Notice preserved:** The copyright notice, license, and attribution must remain intact in all copies.
+
+The original foundation code was commercially purchased; our substantial modifications and additions are shared under these terms.
 
 We're grateful for the starting point and hope our additions help others building AI companion systems.
 
