@@ -279,7 +279,7 @@ Personality isn't assigned. It emerges from how you process experience. The syst
 
 ## License
 
-MIT — Use it, fork it, make it yours.
+Attribution + No-Code-Removal — Credit the authors, don't strip original code. See [LICENSE](./LICENSE) for full terms.
 
 ---
 
